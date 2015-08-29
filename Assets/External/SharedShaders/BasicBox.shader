@@ -23,19 +23,23 @@
 			float2 uv_MainTex;
 			float3 worldPos;
 			float3 normal;
+			fixed4 color;
 		};
 
 		half _Glossiness;
 		half _Metallic;
 		fixed4 _Color;
 		
+		// Step0
 		void vert (inout appdata_full v, out Input o) 
 		{
         	UNITY_INITIALIZE_OUTPUT(Input,o);
         	o.worldPos = mul(_Object2World, float4(v.vertex.xyz, 1.0));
         	o.normal = mul(_Object2World, float4(v.normal.xyz, 1.0));
+        	o.color = v.color;
       	}
 		
+		// Step2
 		half4 LightingSimpleSpecular (SurfaceOutput s, half3 lightDir, half3 viewDir, half atten) 
 		{
 	        half3 h = normalize (lightDir + viewDir);
@@ -48,12 +52,14 @@
 	        
 	        return c;
 	    }
-
+		
+		// Step1
 		void surf (Input IN, inout SurfaceOutput o) {
 			//fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
 			fixed4 colorByCoreDistance = lerp(fixed4(1.0,0.0,0.0,1.0), fixed4(0.5,1.0,0.5,1.0), smoothstep(1.5, 10.0, length(IN.worldPos)));
 			fixed4 color = fixed4(IN.normal, 1.0)*0.25 + colorByCoreDistance*0.75;
-			fixed4 c = color * _Color;
+			//fixed4 c = color * IN.color * _Color;
+			fixed4 c = IN.color;
 			o.Albedo = c.rgb;
 			o.Alpha = c.a;
 		}

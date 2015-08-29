@@ -6,29 +6,21 @@ using System.Collections.Generic;
 public class CustomQuadGenerator
 {
 	// Bottom Left, Top Left, Top Right, Bottom Right
-	public Mesh Generate(List<Vector3> positions, Vector3 normal)
+	public Mesh Generate(Vector3 [] vertices, Color [] colors, Vector3 normal)
 	{
 		Mesh mesh = new Mesh();
-		Generate(mesh, positions, normal);
+		Generate(mesh, vertices, colors, normal);
 
 		return mesh;
 	}
 
-	public void Generate(Mesh mesh, List<Vector3> positions, Vector3 normal)
+	public void Generate(Mesh mesh, Vector3 [] vertices, Color [] colors, Vector3 normal)
 	{
 		int nvertices = 4;
 		
-		Vector3[] vertices = new Vector3[nvertices];
 		Vector3[] normals = new Vector3[nvertices];
 		Vector2 [] uvs = new Vector2[nvertices];
 		int [] indices = {0, 1, 2, 0, 2, 3};
-		
-		vertices[0] = positions[0];
-		vertices[1] = positions[1];
-		vertices[2] = positions[2];
-		vertices[3] = positions[3];
-
-		//Vector3 normal = Vector3.Cross((positions[1]-positions[0]).normalized, (positions[3]-positions[0]).normalized);
 
 		normals[0] = normal;
 		normals[1] = normal;
@@ -43,6 +35,7 @@ public class CustomQuadGenerator
 		mesh.vertices = vertices;
 		mesh.triangles = indices;
 		mesh.normals = normals;
+		mesh.colors = colors;
 		mesh.uv = uvs;
 	}
 }

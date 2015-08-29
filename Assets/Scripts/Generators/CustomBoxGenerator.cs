@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using MQMTech.Mathematics;
+
+using vec4 = UnityEngine.Vector4;
+using vec3 = UnityEngine.Vector3;
+using vec2 = UnityEngine.Vector2;
 
 [System.Serializable]
 public class CustomBoxGenerator
@@ -21,6 +26,9 @@ public class CustomBoxGenerator
 		Vector3[] vertices = new Vector3[nvertices];
 		int vertexIdx = 0;
 
+		Color[] colors = new Color[nvertices];
+		int colorsIdx = 0;
+
 		Vector2[] uv = new Vector2[nvertices];
 		int uvsIdx = 0;
 
@@ -36,48 +44,58 @@ public class CustomBoxGenerator
 		Vector3 normal;
 		// Bottom
 		normal = orientation * Vector3.down;
-		quadGenerator.Generate(tempMesh, new List<Vector3>(){ positions[1], positions[0], positions[2], positions[3] }, normal);
+		quadGenerator.Generate(tempMesh, new Vector3 []{ positions[1], positions[0], positions[2], positions[3] }, new Color []{ Color.white, Color.white, Color.white, Color.white }, normal);
 		vertexIdx += AddVector3(vertices, tempMesh.vertices, vertexIdx);
+		colorsIdx += AddColors(colors, tempMesh.colors, colorsIdx);
 		normalIdx += AddVector3(normals, tempMesh.normals, normalIdx);
 		indexIdx += AddIndices(indices, tempMesh.triangles, indexIdx, 0);
 		uvsIdx += AddUVs(uv, tempMesh.uv, uvsIdx);
 
 		// Top
 		normal = orientation * Vector3.up;
-		quadGenerator.Generate(tempMesh, new List<Vector3>(){ positions[4], positions[5], positions[7], positions[6] }, normal);
+		quadGenerator.Generate(tempMesh,new Vector3 []{ positions[4], positions[5], positions[7], positions[6] }, new Color []{ Color.white, Color.white, Color.white, Color.white }, normal);
 		vertexIdx += AddVector3(vertices, tempMesh.vertices, vertexIdx);
+		colorsIdx += AddColors(colors, tempMesh.colors, colorsIdx);
 		normalIdx += AddVector3(normals, tempMesh.normals, normalIdx);
 		indexIdx += AddIndices(indices, tempMesh.triangles, indexIdx, 4);
 		uvsIdx += AddUVs(uv, tempMesh.uv, uvsIdx);
 
 		// Left
+		Color browmColor = new Color(184f/255f, 138f/255f, 0f, 255f/255f);
+		//Color browmColor = new Color(184f, 138f, 0f, 255f);
+		//Color browmColor = new Color(1f, 0f, 0f, 1f);
+
 		normal = orientation * Vector3.left;
-		quadGenerator.Generate(tempMesh, new List<Vector3>(){ positions[1], positions[5], positions[4], positions[0] }, normal);
+		quadGenerator.Generate(tempMesh,new Vector3 []{ positions[1], positions[5], positions[4], positions[0] }, new Color []{ browmColor, browmColor, browmColor, browmColor }, normal);
 		vertexIdx += AddVector3(vertices, tempMesh.vertices, vertexIdx);
+		colorsIdx += AddColors(colors, tempMesh.colors, colorsIdx);
 		normalIdx += AddVector3(normals, tempMesh.normals, normalIdx);
 		indexIdx += AddIndices(indices, tempMesh.triangles, indexIdx, 8);
 		uvsIdx += AddUVs(uv, tempMesh.uv, uvsIdx);
 
 		// Right
 		normal = orientation * Vector3.right;
-		quadGenerator.Generate(tempMesh, new List<Vector3>(){ positions[2], positions[6], positions[7], positions[3] }, normal);
+		quadGenerator.Generate(tempMesh,new Vector3 []{ positions[2], positions[6], positions[7], positions[3] }, new Color []{ browmColor, browmColor, browmColor, browmColor }, normal);
 		vertexIdx += AddVector3(vertices, tempMesh.vertices, vertexIdx);
+		colorsIdx += AddColors(colors, tempMesh.colors, colorsIdx);
 		normalIdx += AddVector3(normals, tempMesh.normals, normalIdx);
 		indexIdx += AddIndices(indices, tempMesh.triangles, indexIdx, 12);
 		uvsIdx += AddUVs(uv, tempMesh.uv, uvsIdx);
 
 		// Back
 		normal = orientation * Vector3.back;
-		quadGenerator.Generate(tempMesh, new List<Vector3>(){ positions[0], positions[4], positions[6], positions[2] }, normal);
+		quadGenerator.Generate(tempMesh,new Vector3 []{ positions[0], positions[4], positions[6], positions[2] }, new Color []{ browmColor, browmColor, browmColor, browmColor }, normal);
 		vertexIdx += AddVector3(vertices, tempMesh.vertices, vertexIdx);
+		colorsIdx += AddColors(colors, tempMesh.colors, colorsIdx);
 		normalIdx += AddVector3(normals, tempMesh.normals, normalIdx);
 		indexIdx += AddIndices(indices, tempMesh.triangles, indexIdx, 16);
 		uvsIdx += AddUVs(uv, tempMesh.uv, uvsIdx);
 
 		// Front
 		normal = orientation * Vector3.forward;
-		quadGenerator.Generate(tempMesh, new List<Vector3>(){ positions[3], positions[7], positions[5], positions[1] }, normal);
+		quadGenerator.Generate(tempMesh,new Vector3 []{ positions[3], positions[7], positions[5], positions[1] }, new Color []{ browmColor, browmColor, browmColor, browmColor }, normal);
 		vertexIdx += AddVector3(vertices, tempMesh.vertices, vertexIdx);
+		colorsIdx += AddColors(colors, tempMesh.colors, colorsIdx);
 		normalIdx += AddVector3(normals, tempMesh.normals, normalIdx);
 		indexIdx += AddIndices(indices, tempMesh.triangles, indexIdx, 20);
 		uvsIdx += AddUVs(uv, tempMesh.uv, uvsIdx);
@@ -86,12 +104,22 @@ public class CustomBoxGenerator
 		mesh.vertices = vertices;
 		mesh.normals = normals;
 		mesh.triangles = indices;
+		mesh.colors = colors;
 		mesh.uv = uv;
 
 		return mesh;
 	}
 
 	int AddVector3(Vector3[] target, Vector3[] source, int offset)
+	{
+		for (int i = 0; i < source.Length; ++i) 
+		{
+			target[i + offset] = source[i];
+		}
+		return source.Length;
+	}
+
+	int AddColors(Color[] target, Color[] source, int offset)
 	{
 		for (int i = 0; i < source.Length; ++i) 
 		{

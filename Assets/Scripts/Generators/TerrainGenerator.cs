@@ -107,7 +107,7 @@ public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator>
 
 	public void Init()
 	{
-		_noiseGenerator = new SinusNoiseGenerator();
+		_noiseGenerator = new PerlinNoiseGenerator();
 		_heightFilter = new HeightFilter();
 		_heightFilter.Init(_minHeight, _maxHeight, _noiseGenerator);
 		_boxes = transform.GetChild(0);

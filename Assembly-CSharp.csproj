@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Box\BaseBox.cs" />
      <Compile Include="Assets\Scripts\Box\TouchTrigger.cs" />
+     <Compile Include="Assets\Scripts\Filters\HeightFilter.cs" />
      <Compile Include="Assets\Scripts\Generators\BoxGenerator.cs" />
      <Compile Include="Assets\Scripts\Generators\CustomBoxGenerator.cs" />
      <Compile Include="Assets\Scripts\Generators\CustomQuadGenerator.cs" />
@@ -55,6 +56,8 @@
      <Compile Include="Assets\Scripts\Generators\QuadGenerator.cs" />
      <Compile Include="Assets\Scripts\Generators\TerrainGenerator.cs" />
      <Compile Include="Assets\Scripts\Generators\TestGenerator.cs" />
+     <Compile Include="Assets\Scripts\Noises\INoiseGenerator.cs" />
+     <Compile Include="Assets\Scripts\Noises\SinusNoiseGenerator.cs" />
      <Compile Include="Assets\Zenject\Extras\SampleGame\Scripts\Asteroid\Asteroid.cs" />
      <Compile Include="Assets\Zenject\Extras\SampleGame\Scripts\Asteroid\AsteroidManager.cs" />
      <Compile Include="Assets\Zenject\Extras\SampleGame\Scripts\Installers\AsteroidsDecoratorInstaller.cs" />

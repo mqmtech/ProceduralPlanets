@@ -20,6 +20,12 @@ public class TerrainGenerator : MonoBehaviour
 	[SerializeField]
 	BoxGenerator _boxGenerator;
 
+	[SerializeField]
+	int _minHeight = 5;
+
+	[SerializeField]
+	int _maxHeight = 10;
+
 	CustomBoxGenerator _customBoxGenerator = new CustomBoxGenerator();
 
 	[SerializeField]
@@ -27,22 +33,35 @@ public class TerrainGenerator : MonoBehaviour
 
 	Vector3 _corePosition;
 
+	INoise3DGenerator _noiseGenerator;
+	HeightFilter _heightFilter;
+
 	void Start()
 	{
+		Init();
 		GenerateTerrain(transform.position);
+	}
+
+	public void Init()
+	{
+		_noiseGenerator = new SinusNoiseGenerator();
+		_heightFilter = new HeightFilter();
+		_heightFilter.Init(_minHeight, _maxHeight, _noiseGenerator);
 	}
 
 	public void GenerateTerrain(Vector3 corePosition)
 	{
 		_corePosition = corePosition;
 
-		for (int layerIdx = 1; layerIdx < 10; ++layerIdx)
-		{
-			GenerateLayer((float) layerIdx, 8f, 1.0f);
-		}
+		int maxLayerIdx = Mathf.RoundToInt(_maxHeight);
+//		for (int layerIdx = 1; layerIdx <= maxLayerIdx; ++layerIdx)
+//		{
+//			GenerateLayer((float) layerIdx, 8f, 1.0f, layerIdx);
+//		}
+		GenerateLayer((float) _maxHeight, 8f, 1.0f, 0);
 	}
 
-	void GenerateLayer(float radius, float xzDivisionFactor, float thickness)
+	void GenerateLayer(float radius, float xzDivisionFactor, float thickness, int currentLayerIdx)
 	{
 		float hDivisions = Mathf.Round( Mathf.Pow(radius, 0.8f) * xzDivisionFactor);
 		float vDisisionsHalf = hDivisions * 0.5f;
@@ -60,28 +79,28 @@ public class TerrainGenerator : MonoBehaviour
 			float currentBoxesAngle = 0f;
 			for (int boxIdx = 0; boxIdx < (int) vDisisionsHalf; ++boxIdx) 
 			{
-				GenerateBox(currentBoxesAngle, currentBoxesAngle + boxesAngleStep, radius, thickness, cicleForward, circleRotationStep, circleRotationHalf);
+				GenerateBox(currentBoxesAngle, currentBoxesAngle + boxesAngleStep, radius, thickness, cicleForward, circleRotationStep, circleRotationHalf, currentLayerIdx);
 				currentBoxesAngle += boxesAngleStep;
 			}
 		}
 	}
 
-
-
-	GameObject GenerateBox(float angleStart, float angleEnd, float radius, float boxThickness, Vector3 circleForward, Quaternion rotationCircleStep, Quaternion totalCircleRotationHalf)
+	GameObject GenerateBox(float angleStart, float angleEnd, float radius, float boxThickness, Vector3 circleForward, Quaternion rotationCircleStep, Quaternion totalCircleRotationHalf, int currentLayerIdx)
 	{
-		Vector3 startPositionBackLeftBottom = Vector3.up * radius;
-		Vector3 startPositionBackLeftTop = Vector3.up * (radius + boxThickness);
-		
 		Quaternion rotationLeft = Quaternion.AngleAxis(angleStart, circleForward);
+		Quaternion rotationRight = Quaternion.AngleAxis(angleEnd, circleForward);
+		Quaternion boxOrientation = Quaternion.AngleAxis((angleStart+angleEnd)*0.5f, circleForward) * totalCircleRotationHalf;
+		radius = _heightFilter.GetHeight((boxOrientation * Vector3.up).normalized);
+
+		//Vector3 startPositionBackLeftBottom = Vector3.up * radius;
+		Vector3 startPositionBackLeftBottom = Vector3.up;
+		Vector3 startPositionBackLeftTop = Vector3.up * (radius + boxThickness);
 
 		Vector3 backLeftBottom = rotationLeft * startPositionBackLeftBottom;
 		Vector3 forwardLeftBottom = rotationCircleStep * backLeftBottom;
 
 		Vector3 backLeftTop = rotationLeft * startPositionBackLeftTop;
 		Vector3 forwardLeftTop = rotationCircleStep * backLeftTop;
-		
-		Quaternion rotationRight = Quaternion.AngleAxis(angleEnd, circleForward);
 
 		Vector3 backRightBottom = rotationRight * startPositionBackLeftBottom;
 		Vector3 forwardRightBottom = rotationCircleStep * backRightBottom;
@@ -89,7 +108,6 @@ public class TerrainGenerator : MonoBehaviour
 		Vector3 backRightTop = rotationRight * startPositionBackLeftTop;
 		Vector3 frontRightTop = rotationCircleStep * backRightTop;
 
-		Quaternion boxOrientation = Quaternion.AngleAxis((angleStart+angleEnd)*0.5f, circleForward) * totalCircleRotationHalf;
 		Mesh mesh = _customBoxGenerator.Generate(new List<Vector3>() { backLeftBottom, forwardLeftBottom, backRightBottom, forwardRightBottom, backLeftTop, forwardLeftTop, backRightTop, frontRightTop }, boxOrientation);
 		GameObject go = new GameObject();
 

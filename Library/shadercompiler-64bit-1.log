@@ -13,3 +13,50 @@ Cmd: compileSnippet
   api=4 type=0 insize=683 outsize=1006 kw= ok=1
 Cmd: compileSnippet
   api=4 type=1 insize=683 outsize=721 kw= ok=1
+Cmd: preprocess
+  insize=997 outsize=1279 ok=1
+Cmd: preprocess
+  insize=636 outsize=1556 ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=6949 outsize=3663 kw=DIRECTIONAL SHADOWS_OFF LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=6949 outsize=1249 kw=DIRECTIONAL SHADOWS_OFF LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=3786 outsize=2753 kw=POINT ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=3786 outsize=1883 kw=POINT ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=2944 outsize=2533 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=2944 outsize=697 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=5987 outsize=4077 kw=LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF HDR_LIGHT_PREPASS_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=5987 outsize=1266 kw=LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF HDR_LIGHT_PREPASS_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=6067 outsize=3801 kw=LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF HDR_LIGHT_PREPASS_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=6067 outsize=1550 kw=LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF HDR_LIGHT_PREPASS_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=3135 outsize=2484 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=3135 outsize=1249 kw= ok=1
+Cmd: preprocess
+  insize=679 outsize=169 ok=1
+Cmd: compileSnippet
+  error: 2 plat 4 at (20): invalid subscript 'color'\nCompiling Vertex program
+  api=4 type=0 insize=807 outsize=0 kw= ok=0
+Cmd: preprocess
+  insize=679 outsize=169 ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=807 outsize=1331 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=807 outsize=559 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=1934 outsize=1956 kw=DIRECTIONAL SHADOWS_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=1934 outsize=6189 kw=DIRECTIONAL SHADOWS_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=1152 outsize=3979 kw=LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=1152 outsize=7855 kw=LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF ok=1

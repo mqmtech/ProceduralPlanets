@@ -6,9 +6,6 @@ public class SinusNoiseGenerator : INoise3DGenerator
 
 	public float Generate(Vector3 i)
 	{
-		i.y *= 0.5f;
-
-
 		i *= 2.15f;
 
 		float n = 0f;

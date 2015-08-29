@@ -51,6 +51,7 @@
      <Compile Include="Assets\Zenject\Main\Editor\ZenEditorUtil.cs" />
      <Compile Include="Assets\Zenject\Main\Editor\ZenjectMenu.cs" />
      <None Include="Assets\Zenject\Extras\SampleGame\Media\Imported\Shaders\Particle Alpha Blend_IgnoreFog.shader" />
+     <None Include="Assets\External\SharedShaders\UnlitBasicBox.shader" />
      <None Include="Assets\Zenject\Extras\SampleGame\Media\Fonts\Space.txt" />
      <None Include="Assets\Zenject\LICENSE.txt" />
      <None Include="Assets\Zenject\Extras\SampleGame\Media\Imported\Shaders\AddSmooth_Layer.shader" />

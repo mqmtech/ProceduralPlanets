@@ -23,7 +23,7 @@ public class HeightFilter
 		_sinusNoiseGenerator = new SinusNoiseGenerator();
 		_perlinNoiseGenerator = new PerlinNoiseGenerator();
 
-		_rotation = Quaternion.AngleAxis(24.25458f, Vector3.up*0.25f + Vector3.right*0.5f + Vector3.forward* 0.25f);
+		_rotation = Quaternion.AngleAxis(18.0f, Vector3.right*0.5f + Vector3.forward* 0.5f);
 	}
 
 	public float GetHeight(Vector3 input)

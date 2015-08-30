@@ -5,8 +5,14 @@
 		_HomosphereColor("Homos phereColor", Color) = (1, 1, 1, 1)
 		_HeterosphereColor("Heterosphere Color", Color) = (1, 1, 1, 1)
 		_AtmospherePowerFactor("Atmosphere Power Factor", Float) = 2.0
+		
+		_SkyColor("Sky Color", Color) = (1, 1, 1, 1)
+		_CloudsColor("Clouds Color", Color) = (0.5, 0.5, 0.5, 0.5)
+		
+		_SunColor("Sun Color", Color) = (0.5, 0.5, 0.5, 0.5)
+		_SunDir("SunDir", Vector) = (1.0, 1.0, 1.0, 1.0)
 	}
-	
+		
     SubShader 
     {
         Pass 
@@ -20,26 +26,33 @@
 			Blend SrcAlpha OneMinusSrcAlpha
 			Cull Off
 			ZWrite Off
+			Fog {Mode Off}
 
             CGPROGRAM
 
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
+            #include "Assets/External/Resources/ShaderLibrary/MQMNoise.cginc"
             
             sampler2D _Noise;
             float3 _PlanetPosition;
             
             fixed4 _HomosphereColor;
             fixed4 _HeterosphereColor;
-            
             half _AtmospherePowerFactor;
+            
+            fixed4 _SkyColor;
+            fixed4 _CloudsColor;
+            
+            fixed4 _SunColor;
+            half4 _SunDir;
 
             struct v2f {
                 float4 pos : SV_POSITION;
                 fixed3 color : COLOR0;
                 half2 uvNoise : TEXCOORD0;
-                half3 worldPos : TEXCOORD1;
+                float3 worldPos : TEXCOORD1;
             };
 
             v2f vert (appdata_full v)
@@ -82,9 +95,17 @@
             	colorFromOuterSpace.a *= atmosphereFactor;
             	
             	// sky color
-            	fixed4 skyColor = fixed4(1., 1., 1., 0.5);
+            	fixed4 skyColor = _SkyColor;
+            	half cloudsFactor = smoothstep(0.5, 1., fbm(i.worldPos*0.08));
+            	skyColor = lerp(skyColor, _CloudsColor, cloudsFactor);
             	
-            	
+            	// Sun color
+            	half3 sunDir = normalize(_SunDir.xyz);
+            	half sunPower = max(dot(sunDir, -cameraToVertexDir), 0.);
+            	half sunFactor = pow(sunPower, 500.) * 1.;
+            	sunFactor 	  += pow(sunPower, 50.) * 0.5;
+            	sunFactor 	  += pow(sunPower, 10.) * 0.25;
+            	skyColor += _SunColor * clamp(sunFactor, 0., 1.);
             	
             	float skyVisibleFactor = lerp(0., 1., smoothstep(0., 10., length(cameraPosLocalToVertex)));
             	skyColor = lerp(fixed4(0., 0., 0., 0.), skyColor, skyVisibleFactor);

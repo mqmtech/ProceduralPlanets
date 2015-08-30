@@ -1,45 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
-public abstract class Singleton<T> where T : class, new()
-{
-	static T _instance = default(T);
-	public static T Instance
-	{
-		get
-		{
-			if(_instance == default(T))
-			{
-				_instance = new T();
-			}
-			return _instance;
-		}
-	}
-}
-
-public abstract class MonoBehaviorSingleton<T> : MonoBehaviour where T : MonoBehaviour, new()
-{
-	static T _instance = default(T);
-	public static T Instance
-	{
-		get
-		{
-			if(_instance == default(T))
-			{
-				_instance = FindObjectOfType<T>();
-				if(_instance == default(T))
-				{
-					GameObject go = new GameObject();
-					go.name = typeof(T).ToString();
-					_instance = go.AddComponent<T>();
-				}
-			}
-
-			return _instance;
-		}
-	}
-}
+using MQMTech.Mathematics;
 
 [System.Serializable]
 public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator> 
@@ -70,13 +32,7 @@ public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator>
 	}
 
 	[SerializeField]
-	Material _material;
-
-	[SerializeField]
-	QuadGenerator _quadGenerator;
-
-	[SerializeField]
-	BoxGenerator _boxGenerator;
+	MaterialGenerator _materialGenerator;
 
 	[SerializeField]
 	float _boxThickness = 1f;
@@ -91,13 +47,12 @@ public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator>
 
 	CustomBoxGenerator _customBoxGenerator = new CustomBoxGenerator();
 
-	[SerializeField]
-	Properties _properties;
-
 	Vector3 _corePosition;
 
 	INoise3DGenerator _noiseGenerator;
 	HeightFilter _heightFilter;
+
+	int _boxCount = 0;
 
 	void Start()
 	{
@@ -116,6 +71,7 @@ public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator>
 	public void GenerateTerrain(Vector3 corePosition)
 	{
 		_corePosition = corePosition;
+		_boxCount = 0;
 
 		int maxLayerIdx = Mathf.RoundToInt(_maxHeight);
 		GenerateLayer((float) _maxHeight, 8f);
@@ -161,9 +117,14 @@ public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator>
 		Quaternion rotationLeft = Quaternion.AngleAxis(angleStart, circleForward);
 		Quaternion rotationRight = Quaternion.AngleAxis(angleEnd, circleForward);
 		Quaternion boxOrientation = Quaternion.AngleAxis((angleStart+angleEnd)*0.5f, circleForward) * totalCircleRotationHalf;
-		float radius = Mathf.Round(_heightFilter.GetHeight((boxOrientation * Vector3.up).normalized));
+		float radius = GetRadiusFromNormal((boxOrientation * Vector3.up).normalized);
 
 		return DoGenerateBox(rotationLeft, rotationRight, boxOrientation, rotationCircleStep, radius);
+	}
+
+	public float GetRadiusFromNormal(Vector3 normal)
+	{
+		return Mathf.Round(_heightFilter.GetHeight(normal));
 	}
 
 	GameObject DoGenerateBox(Quaternion rotationLeft, Quaternion rotationRight, Quaternion boxOrientation, Quaternion rotationCircleStep, float radius)
@@ -182,15 +143,35 @@ public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator>
 		
 		Vector3 backRightTop = rotationRight * startPositionBackLeftTop;
 		Vector3 frontRightTop = rotationCircleStep * backRightTop;
-		
-		Mesh mesh = _customBoxGenerator.Generate(new List<Vector3>() { backLeftBottom, forwardLeftBottom, backRightBottom, forwardRightBottom, backLeftTop, forwardLeftTop, backRightTop, frontRightTop }, boxOrientation);
+
+		//Mesh mesh = _customBoxGenerator.Generate(new List<Vector3>() { backLeftBottom, forwardLeftBottom, backRightBottom, forwardRightBottom, backLeftTop, forwardLeftTop, backRightTop, frontRightTop }, boxOrientation);
+		Vector3 boxPivotPosition = (backLeftTop + forwardLeftTop + backRightTop + frontRightTop) * 0.25f;
+		Quaternion inverseBoxOrientation = Quaternion.Inverse(boxOrientation);
+		backLeftBottom = inverseBoxOrientation*(backLeftBottom-boxPivotPosition);
+		forwardLeftBottom = inverseBoxOrientation*(forwardLeftBottom-boxPivotPosition);
+		backLeftTop = inverseBoxOrientation*(backLeftTop-boxPivotPosition);
+		forwardLeftTop = inverseBoxOrientation*(forwardLeftTop-boxPivotPosition);
+		backRightBottom = inverseBoxOrientation*(backRightBottom-boxPivotPosition);
+		forwardRightBottom = inverseBoxOrientation*(forwardRightBottom-boxPivotPosition);
+		backRightTop = inverseBoxOrientation*(backRightTop-boxPivotPosition);
+		frontRightTop = inverseBoxOrientation*(frontRightTop-boxPivotPosition);
+
+		Color lateralColor = mMath.color(1f, 0f, 0f, 0f);
+		Color verticalColor = mMath.color(0f, 1f, 0f, 0f);
+		Mesh mesh = _customBoxGenerator.Generate(new Vector3[] { backLeftBottom, forwardLeftBottom, backRightBottom, forwardRightBottom, backLeftTop, forwardLeftTop, backRightTop, frontRightTop }, Quaternion.identity, new Color[]{verticalColor, verticalColor, lateralColor, lateralColor, lateralColor, lateralColor} );
+
 		GameObject go = new GameObject();
+		go.transform.position = boxPivotPosition;
+		go.transform.rotation = boxOrientation;
+
+		_boxCount++;
+		go.name = "TerrainBox"+_boxCount.ToString();
 		
 		MeshFilter mf = go.AddComponent<MeshFilter>();
 		mf.mesh = mesh;
 		
 		MeshRenderer mr = go.AddComponent<MeshRenderer>();
-		mr.material = _material;
+		mr.material = _materialGenerator.Get(radius, boxPivotPosition);
 		
 		Collider collider = go.AddComponent<MeshCollider>();
 		

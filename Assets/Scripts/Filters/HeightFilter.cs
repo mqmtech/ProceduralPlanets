@@ -32,11 +32,14 @@ public class HeightFilter
 		input.Normalize();
 
 		float noise = 0f;
-		noise += 0.6f*_sinusNoiseGenerator.Generate(input * 3.15f);
-		noise += 0.4f*mMath.smoothstep(0.40f, 1.0f,_noiseGenerator.Generate(input * 2.0125f));
-		//noise += 0.25f*_noiseGenerator.Generate(input * 3.5f);
 
-		//noise /= 0.95f;
+		noise += 0.500f*mMath.smoothstep(0.15f, 1.0f, _sinusNoiseGenerator.Generate(input * 3.15f));
+		noise += 0.250f*mMath.smoothstep(0.0f, 1.0f, _sinusNoiseGenerator.Generate(input * 6.15f));
+		noise += 0.250f*mMath.smoothstep(0.0f, 1.0f,_noiseGenerator.Generate(input * 2.01125f));
+
+		noise /= 1.000f;
+
+		noise = Mathf.Clamp01(noise - 0.25f)/0.75f;
 
 		return _minHeight + (_maxHeight - _minHeight) * noise;
 	}

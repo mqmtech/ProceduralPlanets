@@ -54,9 +54,9 @@ namespace MQMTech.Mathematics
 		public static Vector3 vec3(Vector2 xy, float z) { return new Vector3(xy.x, xy.y, z); }
 		public static Vector3 vec3(float x, Vector2 yz) { return new Vector3(x, yz.x, yz.y); }
 
-		public static Color color(int r, int g, int b, int a) { return new Color(r, g, b, a); }
-		public static Color color(int r, int g, int b) { return new Color(r, g, b, 255); }
-		public static Color color(int value) { return new Color(value, value, value, value); }
+		public static Color color(float r, float g, float b, float a) { return new Color(r, g, b, a); }
+		public static Color color(float r, float g, float b) { return new Color(r, g, b, 1f); }
+		public static Color color(float value) { return new Color(value, value, value, value); }
 
 		public static Vector2 vec2(float x, float y) { return new Vector2(x, y); }
 		public static Vector2 vec2(float value) { return new Vector2(value, value); }

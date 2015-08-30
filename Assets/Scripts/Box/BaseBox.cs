@@ -1,18 +1,18 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class BaseBox : MonoBehaviour 
 {
-	TerrainGenerator.BoxGenerationProperties _generationProperties;
-	public TerrainGenerator.BoxGenerationProperties GenerationProperties { get { return _generationProperties; } }
+	PlanetGenerator.BoxGenerationProperties _generationProperties;
+	public PlanetGenerator.BoxGenerationProperties GenerationProperties { get { return _generationProperties; } }
 
 	public void OnTouched()
 	{
 		gameObject.SetActive(false);
-		TerrainGenerator.Instance.OnBoxDestroyed(this);
+		PlanetGenerator.Instance.OnBoxDestroyed(this);
 	}
 
-	public void SetGenerationProperties(TerrainGenerator.BoxGenerationProperties generationProperties)
+	public void SetGenerationProperties(PlanetGenerator.BoxGenerationProperties generationProperties)
 	{
 		_generationProperties = generationProperties;
 	}

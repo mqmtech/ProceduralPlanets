@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Atmosphere\Atmosphere.cs" />
      <Compile Include="Assets\Scripts\Box\BaseBox.cs" />
      <Compile Include="Assets\Scripts\Box\TouchTrigger.cs" />
      <Compile Include="Assets\Scripts\Filters\HeightFilter.cs" />
@@ -54,8 +55,8 @@
      <Compile Include="Assets\Scripts\Generators\CustomQuadGenerator.cs" />
      <Compile Include="Assets\Scripts\Generators\IMeshGenerator.cs" />
      <Compile Include="Assets\Scripts\Generators\MaterialGenerator.cs" />
+     <Compile Include="Assets\Scripts\Generators\PlanetGenerator.cs" />
      <Compile Include="Assets\Scripts\Generators\QuadGenerator.cs" />
-     <Compile Include="Assets\Scripts\Generators\TerrainGenerator.cs" />
      <Compile Include="Assets\Scripts\Generators\TestGenerator.cs" />
      <Compile Include="Assets\Scripts\Mathematics\mMath.cs" />
      <Compile Include="Assets\Scripts\Noises\INoiseGenerator.cs" />
@@ -111,6 +112,7 @@
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\MultiPassHollywoodFlares.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlurEffectConeTaps.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\CameraMotionBlur.shader" />
+     <None Include="Assets\External\SharedShaders\Atmosphere.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_Antialiasing\DLAA.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\NoiseAndGrainDX11.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BrightPassFilter2.shader" />

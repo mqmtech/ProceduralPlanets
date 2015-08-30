@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MQMTech.Mathematics;
 
 [System.Serializable]
-public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator> 
+public class PlanetGenerator : MonoBehaviorSingleton<PlanetGenerator> 
 {
 	[System.Serializable]
 	public struct Properties
@@ -79,7 +79,7 @@ public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator>
 
 	public void OnBoxDestroyed(BaseBox box)
 	{
-		TerrainGenerator.BoxGenerationProperties properties = box.GenerationProperties;
+		PlanetGenerator.BoxGenerationProperties properties = box.GenerationProperties;
 		properties.Radius--;
 
 		if(properties.Radius > 1f)

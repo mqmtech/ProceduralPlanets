@@ -1,4 +1,4 @@
-﻿Shader "Tutorial/UnlitBasicBox" {
+﻿Shader "MQMTech/UnlitVoxel" {
     SubShader {
         Pass {
 
@@ -13,11 +13,11 @@
                 fixed3 color : COLOR0;
             };
 
-            v2f vert (appdata_full v)
+            v2f vert (appdata_base v)
             {
                 v2f o;
                 o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
-                o.color = v.color;
+                //o.color = v.color;
                 return o;
             }
 

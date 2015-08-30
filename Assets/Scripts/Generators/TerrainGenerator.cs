@@ -129,7 +129,7 @@ public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator>
 
 	GameObject DoGenerateBox(Quaternion rotationLeft, Quaternion rotationRight, Quaternion boxOrientation, Quaternion rotationCircleStep, float radius)
 	{
-		Vector3 startPositionBackLeftBottom = Vector3.up;
+		Vector3 startPositionBackLeftBottom = Vector3.up * (radius );
 		Vector3 startPositionBackLeftTop = Vector3.up * (radius + _boxThickness);
 		
 		Vector3 backLeftBottom = rotationLeft * startPositionBackLeftBottom;
@@ -161,8 +161,6 @@ public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator>
 		Mesh mesh = _customBoxGenerator.Generate(new Vector3[] { backLeftBottom, forwardLeftBottom, backRightBottom, forwardRightBottom, backLeftTop, forwardLeftTop, backRightTop, frontRightTop }, Quaternion.identity, new Color[]{verticalColor, verticalColor, lateralColor, lateralColor, lateralColor, lateralColor} );
 
 		GameObject go = new GameObject();
-		go.transform.position = boxPivotPosition;
-		go.transform.rotation = boxOrientation;
 
 		_boxCount++;
 		go.name = "TerrainBox"+_boxCount.ToString();
@@ -173,7 +171,11 @@ public class TerrainGenerator : MonoBehaviorSingleton<TerrainGenerator>
 		MeshRenderer mr = go.AddComponent<MeshRenderer>();
 		mr.material = _materialGenerator.Get(radius, boxPivotPosition);
 		
-		Collider collider = go.AddComponent<MeshCollider>();
+		BoxCollider collider = go.AddComponent<BoxCollider>();
+
+		go.transform.position = boxPivotPosition;
+		go.transform.rotation = boxOrientation;
+		//go.isStatic = true;
 		
 		BaseBox box = go.AddComponent<BaseBox>();
 		box.SetGenerationProperties( new BoxGenerationProperties(rotationLeft, rotationRight, boxOrientation, rotationCircleStep, radius) );

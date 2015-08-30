@@ -17,6 +17,9 @@ public class MaterialGenerator
 	[SerializeField]
 	List<MaterialProperty> _materialProperties;
 
+	[SerializeField]
+	Material _unlitMaterial;
+
 	List<MaterialProperty> _tempAvalilableMaterials = new List<MaterialProperty>();
 
 	PerlinNoiseGenerator _noiseGenerator = new PerlinNoiseGenerator();

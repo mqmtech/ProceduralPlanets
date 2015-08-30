@@ -21,7 +21,6 @@
 		struct Input {
 			float2 uv_MainTex;
 			float3 worldPos;
-			float3 normal;
 			fixed4 color;
 		};
 
@@ -31,13 +30,13 @@
 		fixed4 _BottomColor;
 		fixed4 _TopColor;
 		
+		sampler2D _MainTex;
+		
 		// This will go to surface function, then the SurfaceOutput will go to the Lighting function then to the finalColor function and then to the screen
 		void vert (inout appdata_full v, out Input o) 
 		{
-        	UNITY_INITIALIZE_OUTPUT(Input,o);
-        	
+        	o.uv_MainTex = v.texcoord;
         	o.worldPos = mul(_Object2World, float4(v.vertex.xyz, 1.0));
-        	o.normal = v.normal.xyz;
         	o.color = v.color;
       	}
 		
@@ -46,6 +45,11 @@
 		{
 			fixed4 boxColor = clamp(abs(IN.color.r), 0.0, 1.0)*_LateralColor + abs(IN.color.g)*_Color;
 			fixed4 c = boxColor;
+			
+			half2 p = IN.uv_MainTex;
+			half d = abs(p.y)-0.5;
+			c = lerp(c*0.4, c, smoothstep(0.0, 0.1, d));
+			
 			o.Albedo = c.rgb;
 			o.Alpha = c.a;
 		}

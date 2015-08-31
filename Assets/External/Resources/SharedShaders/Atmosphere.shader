@@ -4,6 +4,7 @@
 		_Noise("Noise", 2D) = "white" {}
 		_HomosphereColor("Homos phereColor", Color) = (1, 1, 1, 1)
 		_HeterosphereColor("Heterosphere Color", Color) = (1, 1, 1, 1)
+		_StarColor("Star Color", Color) = (1, 1, 1, 1)
 		_AtmospherePowerFactor("Atmosphere Power Factor", Float) = 2.0
 		
 		_SkyColor("Sky Color", Color) = (1, 1, 1, 1)
@@ -40,6 +41,7 @@
             
             fixed4 _HomosphereColor;
             fixed4 _HeterosphereColor;
+            fixed4 _StarColor;
             half _AtmospherePowerFactor;
             
             fixed4 _SkyColor;
@@ -80,23 +82,23 @@
             	half3 cameraToVertexDir = normalize(cameraPosLocalToVertex);
             	half3 cameraPosLocalToPlanet = _WorldSpaceCameraPos - planetPosition;
             	
-            	float outerSpaceFactor = lerp(0., 1., smoothstep(0., 200., length(cameraPosLocalToPlanet) - distanceToPlanet));
+            	float outerSpaceFactor = lerp(0., 1.0, smoothstep(0., 150., length(cameraPosLocalToPlanet) - distanceToPlanet));
             	
             	// Atmosphere view from outer space
             	half atmosphereFactor = lerp(1.0, 0.1, pow(max(dot(dirLocalToPlanet, cameraToVertexDir), 0.), _AtmospherePowerFactor));
+            	atmosphereFactor *= lerp(0.0, 1.0, smoothstep(0.30, 0.70, atmosphereFactor));
             	fixed4 colorFromOuterSpace = lerp(_HomosphereColor, _HeterosphereColor, atmosphereFactor);
-            	atmosphereFactor *= lerp(0.0, 1.0, smoothstep(0.5, 0.70, atmosphereFactor));
             	
-            	half smoothToOuterSpaceFactor = lerp(1.0, 0.0, smoothstep(0.7, 1.0, atmosphereFactor));
+            	half smoothToOuterSpaceFactor = lerp(1.0, 0.0, smoothstep(0.3, 1.0, atmosphereFactor));
             	
             	atmosphereFactor = lerp(atmosphereFactor, 1.0, outerSpaceFactor);
-            	colorFromOuterSpace = lerp(colorFromOuterSpace, _HeterosphereColor, atmosphereFactor);
+            	colorFromOuterSpace = lerp(colorFromOuterSpace, _StarColor, atmosphereFactor);
             	atmosphereFactor *= smoothToOuterSpaceFactor;
             	colorFromOuterSpace.a *= atmosphereFactor;
             	
             	// sky color
             	fixed4 skyColor = _SkyColor;
-            	half cloudsFactor = smoothstep(0.5, 1., fbm(i.worldPos*0.08));
+            	half cloudsFactor = smoothstep(0.5, 1., fbm((i.worldPos+float3(_Time.y, _Time.x, _Time.x))*0.08));
             	skyColor = lerp(skyColor, _CloudsColor, cloudsFactor);
             	
             	// Sun color

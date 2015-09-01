@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\Atmosphere\Atmosphere.cs" />
      <Compile Include="Assets\Scripts\Box\BaseBox.cs" />
      <Compile Include="Assets\Scripts\Box\TouchTrigger.cs" />
+     <Compile Include="Assets\Scripts\Entities\PlanetEntity.cs" />
      <Compile Include="Assets\Scripts\Filters\HeightFilter.cs" />
      <Compile Include="Assets\Scripts\Generators\BoxGenerator.cs" />
      <Compile Include="Assets\Scripts\Generators\CustomBoxGenerator.cs" />
@@ -58,11 +59,15 @@
      <Compile Include="Assets\Scripts\Generators\PlanetGenerator.cs" />
      <Compile Include="Assets\Scripts\Generators\QuadGenerator.cs" />
      <Compile Include="Assets\Scripts\Generators\TestGenerator.cs" />
+     <Compile Include="Assets\Scripts\Generators\Tree\TreeGenerator.cs" />
      <Compile Include="Assets\Scripts\Mathematics\mMath.cs" />
+     <Compile Include="Assets\Scripts\Movement\EntityGravity.cs" />
+     <Compile Include="Assets\Scripts\Movement\SphericalMover.cs" />
      <Compile Include="Assets\Scripts\Noises\INoiseGenerator.cs" />
      <Compile Include="Assets\Scripts\Noises\PerlinNoiseGenerator.cs" />
      <Compile Include="Assets\Scripts\Noises\SinusNoiseGenerator.cs" />
      <Compile Include="Assets\Scripts\TransformLibrary\Rotator.cs" />
+     <Compile Include="Assets\Scripts\Utils\Layer.cs" />
      <Compile Include="Assets\Scripts\Utils\Singleton.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />

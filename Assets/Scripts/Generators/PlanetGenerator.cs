@@ -6,6 +6,12 @@ using MQMTech.Mathematics;
 [System.Serializable]
 public class PlanetGenerator : MonoBehaviorSingleton<PlanetGenerator> 
 {
+	public enum CoordinateSpace
+	{
+		Local,
+		World
+	}
+
 	[System.Serializable]
 	public struct Properties
 	{
@@ -35,6 +41,9 @@ public class PlanetGenerator : MonoBehaviorSingleton<PlanetGenerator>
 	MaterialGenerator _materialGenerator;
 
 	[SerializeField]
+	TreeGenerator _treeGenerator;
+
+	[SerializeField]
 	float _boxThickness = 1f;
 
 	[SerializeField]
@@ -42,6 +51,9 @@ public class PlanetGenerator : MonoBehaviorSingleton<PlanetGenerator>
 
 	[SerializeField]
 	int _maxHeight = 10;
+
+	[SerializeField]
+	float _gravityMagnitude = 9.8f;
 
 	Transform _boxes;
 
@@ -88,6 +100,96 @@ public class PlanetGenerator : MonoBehaviorSingleton<PlanetGenerator>
 		}
 	}
 
+	// Methods to be refactored into its own Planet
+	public BaseBox GetVoxelInPosition(Vector3 position)
+	{
+		Vector3 dirToCore = (transform.position - position).normalized;
+		Ray ray = new Ray(position, dirToCore);
+
+		BaseBox voxel = null;
+		RaycastHit hitInfo;
+		if(Physics.Raycast(ray, out hitInfo, 999999f, 1<<Layer.Terrain))
+		{
+			voxel = hitInfo.collider.GetComponentInParent<BaseBox>();
+		}
+		else
+		{
+			Debug.Log("Voxel Not Found :(, position: " + position + ", Direction: " + dirToCore );
+		}
+
+		return voxel;
+	}
+
+	public Vector3 GetGravity(Vector3 position)
+	{
+		return (transform.position - position).normalized * _gravityMagnitude;
+	}
+
+	public Vector3 ConvertToLocalPosition(Vector3 position)
+	{
+		Vector3 localPos = position - transform.position;
+
+		Quaternion invRotation = Quaternion.Inverse(transform.rotation);
+		localPos = invRotation * localPos;
+
+		return localPos;
+	}
+
+	public Vector3 ConvertToWorldPosition(Vector3 localPos)
+	{
+		Vector3 worldPos = (transform.rotation * localPos) + transform.position;
+		return worldPos;
+	}
+
+	public bool GetAxisFromPosition(Vector3 position, CoordinateSpace space, out Vector3 right, out Vector3 up, out Vector3 forward)
+	{
+		up = (position - transform.position).normalized;
+		right = new Vector3(up.y, -up.x, up.z);
+		forward = Vector3.Cross(right, up);
+
+		if(space == CoordinateSpace.Local)
+		{
+			Quaternion invRotation = Quaternion.Inverse(transform.rotation);
+
+			up = invRotation * up;
+			right = invRotation * right;
+			forward = invRotation * forward;
+		}
+		return true;
+
+
+//		BaseBox voxel = GetVoxelInPosition(position);
+//		if(voxel == null)
+//		{
+//			Debug.LogWarning("Voxel not found in position!");
+//			right = up = forward = Vector3.one;
+//			return false;
+//		}
+//		right = voxel.transform.right;
+//		up = voxel.transform.up;
+//		forward = voxel.transform.forward;
+//		return true;
+
+//		Vector3 startPosition = Vector3.up * 35f;
+//		Quaternion rotationForwardStart = Quaternion.AngleAxis(85f, Vector3.forward);
+//		Quaternion rotationForwardEnd = Quaternion.AngleAxis(95f, Vector3.forward);
+//
+//		Vector3 positionForwardStart = rotationForwardStart * startPosition;
+//		Vector3 positionForwardEnd = rotationForwardEnd * startPosition;
+//		forward = (positionForwardEnd - positionForwardStart).normalized;
+//
+//
+//		Quaternion rotationForwarMiddleRot = Quaternion.AngleAxis(90f, Vector3.forward);
+//		Vector3 positionRightStart = rotationForwarMiddleRot * startPosition;
+//		Quaternion rotationUp = Quaternion.AngleAxis(10f, Vector3.up);
+//		Vector3 positionRightEnd = rotationUp * positionRightStart;
+//		right = (positionRightEnd - positionRightStart).normalized;
+//
+//		up = (position - transform.position).normalized;
+
+		return true;
+	}
+
 	void GenerateLayer(float maxRadius, float xzDivisionFactor)
 	{
 		float hDivisions = Mathf.Round( Mathf.Pow(maxRadius, 0.8f) * xzDivisionFactor);
@@ -129,36 +231,38 @@ public class PlanetGenerator : MonoBehaviorSingleton<PlanetGenerator>
 
 	GameObject DoGenerateBox(Quaternion rotationLeft, Quaternion rotationRight, Quaternion boxOrientation, Quaternion rotationCircleStep, float radius)
 	{
-		Vector3 startPositionBackLeftBottom = Vector3.up * (radius );
-		Vector3 startPositionBackLeftTop = Vector3.up * (radius + _boxThickness);
+		Vector3 startPositionBackLeftBottomWS = transform.position + Vector3.up * (radius);
+		Vector3 startPositionBackLeftTopWS = transform.position + Vector3.up * (radius + _boxThickness);
 		
-		Vector3 backLeftBottom = rotationLeft * startPositionBackLeftBottom;
-		Vector3 forwardLeftBottom = rotationCircleStep * backLeftBottom;
+		Vector3 backLeftBottomWS = rotationLeft * startPositionBackLeftBottomWS;
+		Vector3 forwardLeftBottomWS = rotationCircleStep * backLeftBottomWS;
 		
-		Vector3 backLeftTop = rotationLeft * startPositionBackLeftTop;
-		Vector3 forwardLeftTop = rotationCircleStep * backLeftTop;
+		Vector3 backLeftTopWS = rotationLeft * startPositionBackLeftTopWS;
+		Vector3 forwardLeftTopWS = rotationCircleStep * backLeftTopWS;
 		
-		Vector3 backRightBottom = rotationRight * startPositionBackLeftBottom;
-		Vector3 forwardRightBottom = rotationCircleStep * backRightBottom;
+		Vector3 backRightBottomWS = rotationRight * startPositionBackLeftBottomWS;
+		Vector3 forwardRightBottomWS = rotationCircleStep * backRightBottomWS;
 		
-		Vector3 backRightTop = rotationRight * startPositionBackLeftTop;
-		Vector3 frontRightTop = rotationCircleStep * backRightTop;
+		Vector3 backRightTopWS = rotationRight * startPositionBackLeftTopWS;
+		Vector3 forwardRightTopWS = rotationCircleStep * backRightTopWS;
 
-		//Mesh mesh = _customBoxGenerator.Generate(new List<Vector3>() { backLeftBottom, forwardLeftBottom, backRightBottom, forwardRightBottom, backLeftTop, forwardLeftTop, backRightTop, frontRightTop }, boxOrientation);
-		Vector3 boxPivotPosition = (backLeftTop + forwardLeftTop + backRightTop + frontRightTop) * 0.25f;
+		Vector3 boxMiddleTopWS = (backLeftTopWS + forwardLeftTopWS + backRightTopWS + forwardRightTopWS) * 0.25f;
+		Vector3 boxMiddleBottomWS = (backLeftBottomWS + forwardLeftBottomWS + backRightBottomWS + forwardRightBottomWS) * 0.25f;
+
 		Quaternion inverseBoxOrientation = Quaternion.Inverse(boxOrientation);
-		backLeftBottom = inverseBoxOrientation*(backLeftBottom-boxPivotPosition);
-		forwardLeftBottom = inverseBoxOrientation*(forwardLeftBottom-boxPivotPosition);
-		backLeftTop = inverseBoxOrientation*(backLeftTop-boxPivotPosition);
-		forwardLeftTop = inverseBoxOrientation*(forwardLeftTop-boxPivotPosition);
-		backRightBottom = inverseBoxOrientation*(backRightBottom-boxPivotPosition);
-		forwardRightBottom = inverseBoxOrientation*(forwardRightBottom-boxPivotPosition);
-		backRightTop = inverseBoxOrientation*(backRightTop-boxPivotPosition);
-		frontRightTop = inverseBoxOrientation*(frontRightTop-boxPivotPosition);
+		Vector3 backLeftBottom = inverseBoxOrientation*(backLeftBottomWS-boxMiddleTopWS);
+		Vector3 forwardLeftBottom = inverseBoxOrientation*(forwardLeftBottomWS-boxMiddleTopWS);
+		Vector3 backLeftTop = inverseBoxOrientation*(backLeftTopWS-boxMiddleTopWS);
+		Vector3 forwardLeftTop = inverseBoxOrientation*(forwardLeftTopWS-boxMiddleTopWS);
+		Vector3 backRightBottom = inverseBoxOrientation*(backRightBottomWS-boxMiddleTopWS);
+		Vector3 forwardRightBottom = inverseBoxOrientation*(forwardRightBottomWS-boxMiddleTopWS);
+		Vector3 backRightTop = inverseBoxOrientation*(backRightTopWS-boxMiddleTopWS);
+		Vector3 forwardRightTop = inverseBoxOrientation*(forwardRightTopWS-boxMiddleTopWS);
 
 		Color lateralColor = mMath.color(1f, 0f, 0f, 0f);
 		Color verticalColor = mMath.color(0f, 1f, 0f, 0f);
-		Mesh mesh = _customBoxGenerator.Generate(new Vector3[] { backLeftBottom, forwardLeftBottom, backRightBottom, forwardRightBottom, backLeftTop, forwardLeftTop, backRightTop, frontRightTop }, Quaternion.identity, new Color[]{verticalColor, verticalColor, lateralColor, lateralColor, lateralColor, lateralColor} );
+		Mesh mesh = _customBoxGenerator.Generate(new Vector3[] { backLeftBottom, forwardLeftBottom, backRightBottom, forwardRightBottom, backLeftTop, forwardLeftTop, backRightTop, forwardRightTop }, Quaternion.identity, new Color[]{verticalColor, verticalColor, lateralColor, lateralColor, lateralColor, lateralColor} );
+		_treeGenerator.Genererate(this, boxMiddleTopWS, boxOrientation, GetAverageHalfDistance(backRightTopWS, backLeftTopWS,  forwardRightTopWS, forwardLeftTopWS), boxMiddleTopWS - boxMiddleBottomWS, GetAverageHalfDistance(forwardLeftTopWS, backLeftTopWS,  forwardRightTopWS, backRightTopWS));
 
 		GameObject go = new GameObject();
 
@@ -169,19 +273,26 @@ public class PlanetGenerator : MonoBehaviorSingleton<PlanetGenerator>
 		mf.mesh = mesh;
 		
 		MeshRenderer mr = go.AddComponent<MeshRenderer>();
-		mr.material = _materialGenerator.Get(radius, boxPivotPosition);
+		mr.material = _materialGenerator.Get(radius, boxMiddleTopWS);
 		
 		BoxCollider collider = go.AddComponent<BoxCollider>();
 
-		go.transform.position = boxPivotPosition;
+		go.layer = Layer.Terrain;
+		go.transform.position = boxMiddleTopWS;
 		go.transform.rotation = boxOrientation;
 		//go.isStatic = true;
 		
 		BaseBox box = go.AddComponent<BaseBox>();
 		box.SetGenerationProperties( new BoxGenerationProperties(rotationLeft, rotationRight, boxOrientation, rotationCircleStep, radius) );
+		box.Init(this);
 
 		box.transform.SetParent(_boxes, false);
 		
 		return go;
+	}
+
+	Vector3 GetAverageHalfDistance(Vector3 a0, Vector3 a1, Vector3 b0, Vector3 b1)
+	{
+		return ((b0+b1)*0.5f - (a0+a1)*0.5f);
 	}
 }

@@ -26,7 +26,7 @@ namespace MQMTech.Mathematics
 		public static Vector3 cos(Vector3 value) { return new Vector3( Mathf.Cos(value.x), Mathf.Cos(value.y), Mathf.Cos(value.z)); }
 		public static Vector2 cos(Vector2 value) { return new Vector2( Mathf.Cos(value.x), Mathf.Cos(value.y)); }
 
-		public static float atan2(float y, float x) { return Mathf.Atan2(x, y); }
+		public static float atan2(float y, float x) { return Mathf.Atan2(y, x); }
 
 		public static float clamp(float value, float min, float max) { return Mathf.Clamp(value, min, max); }
 		public static Vector3 clamp(Vector3 value, float min, float max) { return new Vector3( Mathf.Clamp(value.x, min, max), Mathf.Clamp(value.y, min, max), Mathf.Clamp(value.z, min, max)); }
@@ -84,6 +84,9 @@ namespace MQMTech.Mathematics
 		public static float mul(float a, float b) { return a*b; }
 		public static Vector3 mul(Vector3 a, Vector3 b) { return new Vector3(a.x*b.x, a.y*b.y, a.z*b.z); }
 		public static Vector2 mul(Vector2 a, Vector2 b) { return new Vector2(a.x*b.x, a.y*b.y); }
+
+		public static float radian2Degree(float rad) { return (180.0f/Mathf.PI)*rad; }
+		public static float degree2Radian(float degrees) { return (Mathf.PI/180.0f)*degrees; }
 
 		public static Matrix4x4 mat4(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33)
 		{

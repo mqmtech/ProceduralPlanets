@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\Atmosphere\Atmosphere.cs" />
      <Compile Include="Assets\Scripts\Box\BaseBox.cs" />
      <Compile Include="Assets\Scripts\Box\TouchTrigger.cs" />
+     <Compile Include="Assets\Scripts\Camera\SphereCameraFollow.cs" />
      <Compile Include="Assets\Scripts\Entities\PlanetEntity.cs" />
      <Compile Include="Assets\Scripts\Filters\HeightFilter.cs" />
      <Compile Include="Assets\Scripts\Generators\BoxGenerator.cs" />

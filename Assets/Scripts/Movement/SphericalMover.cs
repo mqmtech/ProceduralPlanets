@@ -14,29 +14,22 @@ public class SphericalMover
 	{
 		_host = host;
 		_planet = planet;
+
+		SetupCoordinates();
 	}
 
-	public bool Move(Vector3 dirLocalToFloor)
+	public void SetupCoordinates()
 	{
-//		BaseBox voxel =_planet.GetVoxelInPosition(_host.position);
-//		if(voxel == null)
-//		{
-//			return false;
-//		}
+		Quaternion rotation;
+		_planet.GetOrientation(_host, out rotation);
+		_host.rotation = rotation;
+	}
 
-		//Vector3 stepMagnitude = (dirLocalToFloor.x * voxel.transform.right + dirLocalToFloor.z * voxel.transform.forward + dirLocalToFloor.y * voxel.transform.up) * _speed * Time.deltaTime;
-		Vector3 right;
-		Vector3 up;
-		Vector3 forward;
-		_planet.GetAxisFromPosition(_host.position, PlanetGenerator.CoordinateSpace.World, out right, out up, out forward);
+	public void Move(Vector3 direction)
+	{
+		Vector3 stepMagnitude = direction * _speed * Time.deltaTime;
+		_host.position = _host.position + stepMagnitude;
 
-		Debug.Log("Right: " + right + ", Forward: " + forward);
-
-
-		Vector3 stepMagnitude = (dirLocalToFloor.x * right + dirLocalToFloor.z * forward + dirLocalToFloor.y * up) * _speed * Time.deltaTime;
-		Vector3 nextPosition = _host.position + stepMagnitude;
-		_host.position = nextPosition;
-
-		return true;
+		SetupCoordinates();
 	}
 }

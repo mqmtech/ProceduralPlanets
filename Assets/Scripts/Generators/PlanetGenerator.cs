@@ -66,6 +66,11 @@ public class PlanetGenerator : MonoBehaviorSingleton<PlanetGenerator>
 
 	int _boxCount = 0;
 
+	float _prevRadiansYX;
+	float _prevRadiansYZ;
+	float _prevRadiansXZ;
+	bool _isFirstTime = true;
+
 	void Start()
 	{
 		Init();
@@ -141,53 +146,10 @@ public class PlanetGenerator : MonoBehaviorSingleton<PlanetGenerator>
 		return worldPos;
 	}
 
-	public bool GetAxisFromPosition(Vector3 position, CoordinateSpace space, out Vector3 right, out Vector3 up, out Vector3 forward)
+	public void GetOrientation(Transform host, out Quaternion rotation)
 	{
-		up = (position - transform.position).normalized;
-		right = new Vector3(up.y, -up.x, up.z);
-		forward = Vector3.Cross(right, up);
-
-		if(space == CoordinateSpace.Local)
-		{
-			Quaternion invRotation = Quaternion.Inverse(transform.rotation);
-
-			up = invRotation * up;
-			right = invRotation * right;
-			forward = invRotation * forward;
-		}
-		return true;
-
-
-//		BaseBox voxel = GetVoxelInPosition(position);
-//		if(voxel == null)
-//		{
-//			Debug.LogWarning("Voxel not found in position!");
-//			right = up = forward = Vector3.one;
-//			return false;
-//		}
-//		right = voxel.transform.right;
-//		up = voxel.transform.up;
-//		forward = voxel.transform.forward;
-//		return true;
-
-//		Vector3 startPosition = Vector3.up * 35f;
-//		Quaternion rotationForwardStart = Quaternion.AngleAxis(85f, Vector3.forward);
-//		Quaternion rotationForwardEnd = Quaternion.AngleAxis(95f, Vector3.forward);
-//
-//		Vector3 positionForwardStart = rotationForwardStart * startPosition;
-//		Vector3 positionForwardEnd = rotationForwardEnd * startPosition;
-//		forward = (positionForwardEnd - positionForwardStart).normalized;
-//
-//
-//		Quaternion rotationForwarMiddleRot = Quaternion.AngleAxis(90f, Vector3.forward);
-//		Vector3 positionRightStart = rotationForwarMiddleRot * startPosition;
-//		Quaternion rotationUp = Quaternion.AngleAxis(10f, Vector3.up);
-//		Vector3 positionRightEnd = rotationUp * positionRightStart;
-//		right = (positionRightEnd - positionRightStart).normalized;
-//
-//		up = (position - transform.position).normalized;
-
-		return true;
+		Vector3 newUp = (host.position - transform.position).normalized;
+		rotation = Quaternion.FromToRotation(host.up, newUp) * host.rotation;
 	}
 
 	void GenerateLayer(float maxRadius, float xzDivisionFactor)

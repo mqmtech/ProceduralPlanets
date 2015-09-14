@@ -1,11 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\External\Resources\SharedShaders\Colored.shader">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\External\Resources\SharedShaders\Atmosphere.shader">
     <Files>
-      <File FileName="Assets\External\Resources\SharedShaders\DefaultUnit.shader" Line="24" Column="31" />
-      <File FileName="Assets\External\Resources\SharedShaders\Atmosphere.shader" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Entities\PlanetEntity.cs" Line="1" Column="1" />
+      <File FileName="Assets\External\Resources\SharedShaders\DefaultUnit.shader" Line="1" Column="1" />
+      <File FileName="Assets\External\Resources\SharedShaders\Atmosphere.shader" Line="71" Column="14" />
       <File FileName="Assets\External\Resources\SharedShaders\GrayScaled.shader" Line="1" Column="1" />
       <File FileName="Assets\External\Resources\SharedShaders\Colored.shader" Line="1" Column="24" />
+      <File FileName="Assets\Scripts\Movement\SphericalPhysics.cs" Line="63" Column="70" />
+      <File FileName="Assets\Scripts\Generators\PlanetGenerator.cs" Line="267" Column="5" />
+      <File FileName="Assets\Scripts\Camera\SphereCameraFollow.cs" Line="26" Column="39" />
+      <File FileName="Assets\External\Resources\SharedShaders\Voxel.shader" Line="54" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -98,15 +98,15 @@
             	
             	// sky color
             	fixed4 skyColor = _SkyColor;
-            	half cloudsFactor = smoothstep(0.5, 1., fbm((i.worldPos+float3(_Time.y, _Time.x, _Time.x))*0.08));
+            	half cloudsFactor = smoothstep(0.2, 1., fbm((i.worldPos+float3(_Time.y, _Time.x, _Time.x))*0.045));
             	skyColor = lerp(skyColor, _CloudsColor, cloudsFactor);
             	
             	// Sun color
             	half3 sunDir = normalize(_SunDir.xyz);
             	half sunPower = max(dot(sunDir, -cameraToVertexDir), 0.);
             	half sunFactor = pow(sunPower, 500.) * 1.;
-            	sunFactor 	  += pow(sunPower, 50.) * 0.5;
-            	sunFactor 	  += pow(sunPower, 10.) * 0.25;
+            	sunFactor 	  += pow(sunPower, 50.) * 0.6;
+            	sunFactor 	  += pow(sunPower, 5.) * 0.35;
             	skyColor += _SunColor * clamp(sunFactor, 0., 1.);
             	
             	float skyVisibleFactor = lerp(0., 1., smoothstep(0., 10., length(cameraPosLocalToVertex)));

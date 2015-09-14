@@ -51,6 +51,7 @@
 			c = lerp(c*0.4, c, smoothstep(0.0, 0.1, d));
 			
 			o.Albedo = c.rgb;
+			o.Albedo = saturate(o.Albedo * 1.82);
 			o.Alpha = c.a;
 		}
 		ENDCG

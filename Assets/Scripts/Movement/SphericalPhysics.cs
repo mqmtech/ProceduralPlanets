@@ -53,10 +53,22 @@ public class SphericalPhysics : MonoBehaviour
 		Vector3 targetLocalPosition = localPosition + deltaPosition;
 
 		//CheckCollisions(_host.transform.position, deltaPosition, ref targetLocalPosition, ref _currentVelocity);
+		Vector3 fixedPosition;
+		if(SetOverTheSuface(targetLocalPosition, out fixedPosition))
+		{
+			Vector3 diff = fixedPosition - localPosition;
+			Vector3 forwardDelta = Vector3.Dot(diff, _host.forward) * _host.forward;
+			Vector3 rightDelta = Vector3.Dot(diff, _host.right) * _host.right;
+			Vector3 upDelta = Vector3.Dot(diff, _host.up) * _host.up;
+			upDelta = Vector3.Slerp(Vector3.zero, upDelta, Time.deltaTime * 16f);
 
-		targetLocalPosition = SetOverTheSuface(targetLocalPosition);
-
-		_host.transform.position = _planet.ConvertToWorldPosition(targetLocalPosition);
+			Vector3 nextPosition = localPosition + forwardDelta + rightDelta + upDelta;
+			_host.transform.position = nextPosition;
+		}
+		else
+		{
+			_host.transform.position = _planet.ConvertToWorldPosition(targetLocalPosition);
+		}
 
 		UpdateOrientation();
 
@@ -94,14 +106,18 @@ public class SphericalPhysics : MonoBehaviour
 		}
 	}
 
-	Vector3 SetOverTheSuface(Vector3 targetLocalPosition)
+	bool SetOverTheSuface(Vector3 targetLocalPosition, out Vector3 outResult)
 	{
+		outResult = targetLocalPosition;
+
 		Vector3 surfaceLocalPosition = _planet.GetSurfaceLocalPosition(targetLocalPosition + targetLocalPosition.normalized * kOutterBias);
 		if(targetLocalPosition.magnitude < surfaceLocalPosition.magnitude)
 		{
-			targetLocalPosition = surfaceLocalPosition;
+			outResult = surfaceLocalPosition;
+			return true;
 		}
-		return targetLocalPosition;
+
+		return false;
 	}
 
 	void UpdateOrientation()

@@ -15,6 +15,7 @@ SubShader {
 	LOD 800
 	
 CGPROGRAM
+//#pragma surface surf BlinnPhong addshadow vertex:disp tessellate:tessEdge
 #pragma surface surf BlinnPhong addshadow vertex:disp tessellate:tessEdge
 #include "Tessellation.cginc"
 
@@ -32,7 +33,9 @@ float _Parallax;
 
 float4 tessEdge (appdata v0, appdata v1, appdata v2)
 {
-	return UnityEdgeLengthBasedTessCull (v0.vertex, v1.vertex, v2.vertex, _EdgeLength, _Parallax * 1.5f);
+	float tess =  (0.5+0.5*sin(_Time.y))*20.0;
+	return float4(4, 4, 4, 4);
+	//return UnityEdgeLengthBasedTessCull (v0.vertex, v1.vertex, v2.vertex, 5 + (1.0+sin(_Time.y))*50, _Parallax * 1.5f);
 }
 
 sampler2D _ParallaxMap;
@@ -59,7 +62,8 @@ void surf (Input IN, inout SurfaceOutput o) {
 	o.Gloss = tex.a;
 	o.Alpha = tex.a * _Color.a;
 	o.Specular = _Shininess;
-	o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+	//o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+	o.Normal = normalize(half3(0.5, 0.5, 0.5));
 }
 ENDCG
 }

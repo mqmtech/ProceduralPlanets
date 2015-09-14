@@ -7,29 +7,30 @@ public class SphericalMover
 	[SerializeField]
 	float _speed = 1f;
 
+	//[SerializeField]
+	float _jumpSpeed = 25f;
+
 	Transform _host;
 	PlanetGenerator _planet;
+	SphericalPhysics _physics;
 
-	public void Init(Transform host, PlanetGenerator planet)
+	public void Init(Transform host, PlanetGenerator planet, SphericalPhysics physics)
 	{
 		_host = host;
 		_planet = planet;
-
-		SetupCoordinates();
+		_physics = physics;
 	}
 
-	public void SetupCoordinates()
+	public void Move(Vector3 velocity)
 	{
-		Quaternion rotation;
-		_planet.GetOrientation(_host, out rotation);
-		_host.rotation = rotation;
+		_physics.AddVelocity(velocity);
 	}
 
-	public void Move(Vector3 direction)
+	public void Jump()
 	{
-		Vector3 stepMagnitude = direction * _speed * Time.deltaTime;
-		_host.position = _host.position + stepMagnitude;
+		Vector3 normal = _host.transform.position - _planet.transform.position;
+		normal.Normalize();
 
-		SetupCoordinates();
+		_physics.AddVelocity(normal * _jumpSpeed);
 	}
 }

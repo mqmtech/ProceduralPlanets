@@ -6,6 +6,9 @@ public class PlanetEntity : MonoBehaviour
 	[SerializeField]
 	SphericalMover _mover;
 
+	[SerializeField]
+	SphericalPhysics _physics;
+
 	PlanetGenerator _planet;
 
 	void Awake()
@@ -16,7 +19,7 @@ public class PlanetEntity : MonoBehaviour
 	void Init()
 	{
 		_planet = FindClosestPlanet();
-		_mover.Init(transform, _planet);
+		_mover.Init(transform, _planet, _physics);
 	}
 
 	PlanetGenerator FindClosestPlanet()
@@ -26,32 +29,30 @@ public class PlanetEntity : MonoBehaviour
 
 	void Update()
 	{
-		_mover.Move(transform.forward);
-
-		//<- left to right from rotation <-
-
+		if(Input.GetKey(KeyCode.W))
+		{
+			_mover.Move(transform.forward);
+		}
+		if(Input.GetKey(KeyCode.S))
+		{
+			_mover.Move(-transform.forward);
+		}
 		if(Input.GetKey(KeyCode.A))
 		{
 			Quaternion delta = Quaternion.AngleAxis(-64f*Time.deltaTime, transform.up);
 			transform.rotation = delta * transform.rotation; 
 		}
-		else if(Input.GetKey(KeyCode.D))
+		if(Input.GetKey(KeyCode.D))
 		{
 			Quaternion delta = Quaternion.AngleAxis(+64f*Time.deltaTime, transform.up);
 			transform.rotation = delta * transform.rotation; 
 		}
-	}
-
-	void OnDrawGizmosSelected()
-	{
-		if(_planet == null)
+		if(Input.GetKey(KeyCode.Space))
 		{
-			return;
+			if(_physics.IsInFloor())
+			{
+				_mover.Jump();
+			}
 		}
-
-		Gizmos.color = Color.green;
-		Vector3 pos = transform.position + transform.up*0.5f;
-		Vector3 target = pos + transform.forward * 4f;
-		Gizmos.DrawLine(pos, target);
 	}
 }

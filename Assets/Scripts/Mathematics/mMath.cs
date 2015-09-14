@@ -40,6 +40,10 @@ namespace MQMTech.Mathematics
 		public static Vector3 floor(Vector3 value) { return new Vector3( Mathf.Floor(value.x), Mathf.Floor(value.y), Mathf.Floor(value.z)); }
 		public static Vector2 floor(Vector2 value) { return new Vector2( Mathf.Floor(value.x), Mathf.Floor(value.y)); } 
 
+		public static float round(float x) { return Mathf.Round(x); }
+		public static Vector3 round(Vector3 value) { return new Vector3( Mathf.Round(value.x), Mathf.Round(value.y), Mathf.Round(value.z)); }
+		public static Vector2 round(Vector2 value) { return new Vector2( Mathf.Round(value.x), Mathf.Round(value.y)); } 
+
 		public static float fract(float x) { return x - Mathf.Floor(x); }
 		public static Vector3 fract(Vector3 value) { return new Vector3( value.x - Mathf.Floor(value.x), value.y - Mathf.Floor(value.y), value.z - Mathf.Floor(value.z)); }
 		public static Vector2 fract(Vector2 value) { return new Vector2( value.x - Mathf.Floor(value.x), value.y - Mathf.Floor(value.y)); }

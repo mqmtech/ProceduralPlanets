@@ -1,14 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Entities\PlanetEntity.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\External\Resources\SharedShaders\Colored.shader">
     <Files>
-      <File FileName="d:\Projects\Dev\NoMansMine\NoMansMine\Assets\Scripts\Generators\CustomBoxGenerator.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Movement\SphericalMover.cs" Line="25" Column="15" />
-      <File FileName="Assets\Scripts\Box\TouchTrigger.cs" Line="21" Column="4" />
-      <File FileName="Assets\Scripts\Movement\EntityGravity.cs" Line="25" Column="36" />
-      <File FileName="Assets\Scripts\Entities\PlanetEntity.cs" Line="43" Column="1" />
-      <File FileName="Assets\Scripts\Generators\Tree\TreeGenerator.cs" Line="133" Column="24" />
-      <File FileName="Assets\Scripts\Generators\PlanetGenerator.cs" Line="152" Column="71" />
+      <File FileName="Assets\External\Resources\SharedShaders\DefaultUnit.shader" Line="24" Column="31" />
+      <File FileName="Assets\External\Resources\SharedShaders\Atmosphere.shader" Line="1" Column="1" />
+      <File FileName="Assets\External\Resources\SharedShaders\GrayScaled.shader" Line="1" Column="1" />
+      <File FileName="Assets\External\Resources\SharedShaders\Colored.shader" Line="1" Column="24" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -8,8 +8,8 @@ public class MaterialGenerator
 	[System.Serializable]
 	public struct MaterialProperty
 	{
-		public int MinRadius;
-		public int MaxRadius;
+		public float MinRadius;
+		public float MaxRadius;
 		public Material Material;
 		public float Weight;
 	}
@@ -17,12 +17,16 @@ public class MaterialGenerator
 	[SerializeField]
 	List<MaterialProperty> _materialProperties;
 
-	[SerializeField]
-	Material _unlitMaterial;
-
 	List<MaterialProperty> _tempAvalilableMaterials = new List<MaterialProperty>();
 
 	PerlinNoiseGenerator _noiseGenerator = new PerlinNoiseGenerator();
+
+	float _maxRadius;
+
+	public void Init(float maxRadius)
+	{
+		_maxRadius = maxRadius;
+	}
 
 	public Material Get(float radius, Vector3 point)
 	{
@@ -45,7 +49,10 @@ public class MaterialGenerator
 
 	bool IsMaterialValid(MaterialProperty property, float radius)
 	{
-		return radius >= property.MinRadius && radius <= property.MaxRadius;
+		float minRadius =  Mathf.Round(property.MinRadius * _maxRadius);
+		float maxRadius =  Mathf.Round(property.MaxRadius * _maxRadius);
+		radius = Mathf.Round(radius);
+		return radius >= minRadius && radius <= maxRadius;
 	}
 
 	Material DoGetMaterial(Vector3 point)
@@ -63,8 +70,8 @@ public class MaterialGenerator
 			}
 		}
 
-		Debug.LogWarning("Found " + _tempAvalilableMaterials.Count + " materials, but the random did not match with any weight :(");
-		return _tempAvalilableMaterials[_tempAvalilableMaterials.Count-1].Material;
+		//Debug.LogWarning("Found " + _tempAvalilableMaterials.Count + " materials, but the random did not match with any weight :(");
+		return _materialProperties[_materialProperties.Count-1].Material;
 	}
 
 	float CalculateTotalWeight()

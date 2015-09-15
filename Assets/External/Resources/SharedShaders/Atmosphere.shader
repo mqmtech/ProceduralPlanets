@@ -98,7 +98,7 @@
             	
             	// sky color
             	fixed4 skyColor = _SkyColor;
-            	half cloudsFactor = smoothstep(0.2, 1., fbm((i.worldPos+float3(_Time.y, _Time.x, _Time.x))*0.045));
+            	half cloudsFactor = smoothstep(0.2, 1., fbm((i.worldPos+float3(_Time.y, _Time.x, _Time.x))*0.015));
             	skyColor = lerp(skyColor, _CloudsColor, cloudsFactor);
             	
             	// Sun color
